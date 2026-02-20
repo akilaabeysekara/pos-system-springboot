@@ -1,14 +1,15 @@
 package lk.ijse.posbackend.service;
 
 import lk.ijse.posbackend.dto.CustomerDTO;
-
 import java.util.List;
 
 public interface CustomerService {
-    public void saveCustomer(CustomerDTO customerDTO);
-    public void updateCustomer(CustomerDTO customerDTO);
-    public void deleteCustomer(String id);
-    public List<CustomerDTO> getAllCustomers();
 
+    boolean saveCustomer(CustomerDTO dto);
 
+    boolean updateCustomer(CustomerDTO dto);
+
+    boolean deleteCustomer(String id);
+
+    List<CustomerDTO> getAllCustomers();
 }

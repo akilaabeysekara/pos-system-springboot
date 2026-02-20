@@ -3,21 +3,14 @@ let customersData = [];
 
 // SAVE CUSTOMER
 function saveCustomer() {
+
     let id = $('#customer_id').val().trim();
     let name = $('#customer_name').val().trim();
     let address = $('#customer_address').val().trim();
     let phone = $('#customer_phone').val().trim();
 
-
     if (id === "" || name === "" || address === "" || phone === "") {
         alert("Please fill all fields");
-        return;
-    }
-
-    // Frontend duplicate check
-    let isDuplicate = customersData.some(customer => customer.id === id);
-    if (isDuplicate) {
-        alert("Customer ID already exists!");
         return;
     }
 
@@ -25,28 +18,40 @@ function saveCustomer() {
         url: 'http://localhost:8080/api/v1/customer',
         method: 'POST',
         contentType: 'application/json',
-        data: JSON.stringify({ id, name, address ,phone}),
-        success: function () {
-            alert("Customer Saved Successfully");
-            getALLCustomers();
-            clearCustomerForm();
+        data: JSON.stringify({ id, name, address, phone }),
+
+        success: function (response) {
+
+            alert(response.message);
+
+            if (response.status === 201) {
+                getALLCustomers();
+                clearCustomerForm();
+            }
         },
+
         error: function (error) {
-            alert("Error saving customer");
-            console.log(error);
+
+            if (error.responseJSON) {
+                alert(error.responseJSON.message);
+            } else {
+                alert("Error saving customer");
+            }
         }
     });
 }
 
+
 // UPDATE CUSTOMER
 function updateCustomer() {
+
     let id = $('#customer_id').val().trim();
     let name = $('#customer_name').val().trim();
     let address = $('#customer_address').val().trim();
     let phone = $('#customer_phone').val().trim();
 
     if (id === "" || name === "" || address === "" || phone === "") {
-        alert("Please select a customer first");
+        alert("Please fill all fields");
         return;
     }
 
@@ -55,24 +60,36 @@ function updateCustomer() {
         method: 'PUT',
         contentType: 'application/json',
         data: JSON.stringify({ id, name, address, phone }),
-        success: function () {
-            alert("Customer Updated Successfully");
-            getALLCustomers();
-            clearCustomerForm();
+
+        success: function (response) {
+
+            alert(response.message);
+
+            if (response.status === 200) {
+                getALLCustomers();
+                clearCustomerForm();
+            }
         },
+
         error: function (error) {
-            alert("Error updating customer");
-            console.log(error);
+
+            if (error.responseJSON) {
+                alert(error.responseJSON.message);
+            } else {
+                alert("Error updating customer");
+            }
         }
     });
 }
 
+
 // DELETE CUSTOMER
 function deleteCustomer() {
+
     let id = $('#customer_id').val().trim();
 
     if (id === "") {
-        alert("Please select a customer to delete");
+        alert("Please select a customer");
         return;
     }
 
@@ -83,29 +100,44 @@ function deleteCustomer() {
     $.ajax({
         url: 'http://localhost:8080/api/v1/customer/' + id,
         method: 'DELETE',
-        success: function () {
-            alert("Customer Deleted Successfully");
-            getALLCustomers();
-            clearCustomerForm();
+
+        success: function (response) {
+
+            alert(response.message);
+
+            if (response.status === 200) {
+                getALLCustomers();
+                clearCustomerForm();
+            }
         },
+
         error: function (error) {
-            alert("Error deleting customer");
-            console.log(error);
+
+            if (error.responseJSON) {
+                alert(error.responseJSON.message);
+            } else {
+                alert("Error deleting customer");
+            }
         }
     });
 }
 
+
 // GET ALL CUSTOMERS
 function getALLCustomers() {
+
     $.ajax({
         type: "GET",
         url: "http://localhost:8080/api/v1/customer",
+
         success: function (response) {
 
-            customersData = response; // store globally
+            customersData = response.data;
+
             $("#customer-table tbody").empty();
 
-            $.each(response, function (index, customer) {
+            $.each(response.data, function (index, customer) {
+
                 let row = `
                     <tr style="cursor:pointer;">
                         <td>${customer.id}</td>
@@ -114,18 +146,21 @@ function getALLCustomers() {
                         <td>${customer.phone}</td>
                     </tr>
                 `;
+
                 $("#customer-table tbody").append(row);
             });
         },
-        error: function (error) {
+
+        error: function () {
             alert("Error loading customers");
-            console.log(error);
         }
     });
 }
 
-// TABLE CLICK EVENT
+
+// TABLE ROW CLICK
 $(document).on("click", "#customer-table tbody tr", function () {
+
     let id = $(this).find("td:eq(0)").text();
     let name = $(this).find("td:eq(1)").text();
     let address = $(this).find("td:eq(2)").text();
@@ -134,24 +169,28 @@ $(document).on("click", "#customer-table tbody tr", function () {
     fillCustomerForm(id, name, address, phone);
 });
 
+
 // FILL FORM
 function fillCustomerForm(id, name, address, phone) {
+
     $('#customer_id').val(id);
     $('#customer_name').val(name);
     $('#customer_address').val(address);
     $('#customer_phone').val(phone);
-
 }
+
 
 // CLEAR FORM
 function clearCustomerForm() {
+
     $('#customer_id').val('');
     $('#customer_name').val('');
     $('#customer_address').val('');
     $('#customer_phone').val('');
 }
 
-// LOAD ON START
+
+// INIT
 $(document).ready(function () {
     getALLCustomers();
 });
