@@ -1,6 +1,7 @@
 // GLOBAL DATA
 let itemsData = [];
 
+
 // SAVE ITEM
 function saveItem() {
 
@@ -21,9 +22,7 @@ function saveItem() {
         }),
 
         success: function (response) {
-
             alert(response.message);
-
             getAllItems();
             clearItemForm();
         },
@@ -53,9 +52,7 @@ function updateItem() {
         }),
 
         success: function (response) {
-
             alert(response.message);
-
             getAllItems();
             clearItemForm();
         },
@@ -84,9 +81,7 @@ function deleteItem() {
         url: "http://localhost:8080/api/v1/item/" + id,
 
         success: function (response) {
-
             alert(response.message);
-
             getAllItems();
             clearItemForm();
         },
@@ -104,24 +99,8 @@ function getAllItems() {
         url: "http://localhost:8080/api/v1/item",
 
         success: function (response) {
-
             itemsData = response.data;
-
-            $("#item-table tbody").empty();
-
-            $.each(response.data, function (index, item) {
-
-                let row = `
-                    <tr style="cursor:pointer;">
-                        <td>${item.id}</td>
-                        <td>${item.name}</td>
-                        <td>${item.price}</td>
-                        <td>${item.qty}</td>
-                    </tr>
-                `;
-
-                $("#item-table tbody").append(row);
-            });
+            renderItems(itemsData);
         },
 
         error: handleAjaxError
@@ -143,7 +122,6 @@ $(document).on("click", "#item-table tbody tr", function () {
 
 // FILL FORM
 function fillItemForm(id, name, price, qty) {
-
     $("#item-code").val(id);
     $("#item-name").val(name);
     $("#item-price").val(price);
@@ -153,14 +131,62 @@ function fillItemForm(id, name, price, qty) {
 
 // CLEAR FORM
 function clearItemForm() {
-
     $("#item-code").val("");
     $("#item-name").val("");
     $("#item-price").val("");
     $("#item-qty").val("");
 }
 
-// COMMON ERROR HANDLER
+
+// RENDER TABLE (for search item)
+function renderItems(data) {
+
+    $("#item-table tbody").empty();
+
+    if (!data || data.length === 0) {
+        $("#item-table tbody").append(`
+            <tr>
+                <td colspan="4">No items found</td>
+            </tr>
+        `);
+        return;
+    }
+
+    $.each(data, function (index, item) {
+
+        let row = `
+            <tr style="cursor:pointer;">
+                <td>${item.id}</td>
+                <td>${item.name}</td>
+                <td>${item.price}</td>
+                <td>${item.qty}</td>
+            </tr>
+        `;
+
+        $("#item-table tbody").append(row);
+    });
+}
+
+
+// SEARCH ITEMS
+function searchItems() {
+
+    let keyword = $("#search-box").val().toLowerCase().trim();
+
+    if (keyword === "") {
+        renderItems(itemsData);
+        return;
+    }
+
+    let filtered = itemsData.filter(item =>
+        item.id.toLowerCase().includes(keyword) ||
+        item.name.toLowerCase().includes(keyword)
+    );
+
+    renderItems(filtered);
+}
+
+// COMMON ERROR HANDLER (for validation errors @Valid annotation in controller)
 function handleAjaxError(error) {
 
     if (!error.responseJSON) {
@@ -182,9 +208,7 @@ function handleAjaxError(error) {
         alert(messages.trim());
 
     } else if (response.data) {
-        // Business exception
         alert(response.data);
-
     } else {
         alert(response.message);
     }
@@ -193,5 +217,15 @@ function handleAjaxError(error) {
 
 // INIT
 $(document).ready(function () {
+
     getAllItems();
+
+    $("#btn-search").click(searchItems);
+
+    $("#search-box").on("keyup", function (e) {
+        if (e.key === "Enter") {
+            searchItems();
+        }
+    });
+
 });

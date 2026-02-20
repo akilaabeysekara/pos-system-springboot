@@ -270,3 +270,61 @@ tbody tr:hover {
         overflow-x: auto;
     }
 }
+
+
+/* Search Container */
+#search-container-payment {
+    width: 500px;
+    margin: 0 auto 20px auto;
+    padding: 15px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+#search-container-item {
+    width: 405px;
+    margin: 0 auto 20px auto;
+    padding: 15px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+#search-container-customer {
+    width: 405px;
+    margin: 0 auto 20px auto;
+    padding: 15px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+/* Search Input */
+#search-box {
+    width: 70%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    outline: none;
+}
+
+/* Search Button */
+#btn-search {
+    padding: 8px 15px;
+    margin-left: 5px;
+    border: none;
+    border-radius: 4px;
+    background-color: #153695;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#btn-search:hover {
+    background-color: #0f276f;
+}

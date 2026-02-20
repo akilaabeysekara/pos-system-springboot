@@ -1,6 +1,7 @@
 // GLOBAL DATA
 let customersData = [];
 
+
 // SAVE CUSTOMER
 function saveCustomer() {
 
@@ -16,9 +17,7 @@ function saveCustomer() {
         data: JSON.stringify({ id, name, address, phone }),
 
         success: function (response) {
-
             alert(response.message);
-
             getALLCustomers();
             clearCustomerForm();
         },
@@ -43,9 +42,7 @@ function updateCustomer() {
         data: JSON.stringify({ id, name, address, phone }),
 
         success: function (response) {
-
             alert(response.message);
-
             getALLCustomers();
             clearCustomerForm();
         },
@@ -74,9 +71,7 @@ function deleteCustomer() {
         method: 'DELETE',
 
         success: function (response) {
-
             alert(response.message);
-
             getALLCustomers();
             clearCustomerForm();
         },
@@ -94,29 +89,15 @@ function getALLCustomers() {
         url: "http://localhost:8080/api/v1/customer",
 
         success: function (response) {
-
             customersData = response.data;
-
-            $("#customer-table tbody").empty();
-
-            $.each(response.data, function (index, customer) {
-
-                let row = `
-                    <tr style="cursor:pointer;">
-                        <td>${customer.id}</td>
-                        <td>${customer.name}</td>
-                        <td>${customer.address}</td>
-                        <td>${customer.phone}</td>
-                    </tr>
-                `;
-
-                $("#customer-table tbody").append(row);
-            });
+            renderCustomers(customersData);
         },
 
         error: handleAjaxError
     });
 }
+
+
 
 
 // TABLE ROW CLICK
@@ -133,7 +114,6 @@ $(document).on("click", "#customer-table tbody tr", function () {
 
 // FILL FORM
 function fillCustomerForm(id, name, address, phone) {
-
     $('#customer_id').val(id);
     $('#customer_name').val(name);
     $('#customer_address').val(address);
@@ -143,14 +123,62 @@ function fillCustomerForm(id, name, address, phone) {
 
 // CLEAR FORM
 function clearCustomerForm() {
-
     $('#customer_id').val('');
     $('#customer_name').val('');
     $('#customer_address').val('');
     $('#customer_phone').val('');
 }
 
-// COMMON ERROR HANDLER
+// RENDER TABLE (for search customer)
+function renderCustomers(data) {
+
+    $("#customer-table tbody").empty();
+
+    if (!data || data.length === 0) {
+        $("#customer-table tbody").append(`
+            <tr>
+                <td colspan="4">No customers found</td>
+            </tr>
+        `);
+        return;
+    }
+
+    $.each(data, function (index, customer) {
+
+        let row = `
+            <tr style="cursor:pointer;">
+                <td>${customer.id}</td>
+                <td>${customer.name}</td>
+                <td>${customer.address}</td>
+                <td>${customer.phone}</td>
+            </tr>
+        `;
+
+        $("#customer-table tbody").append(row);
+    });
+}
+
+
+// SEARCH CUSTOMER
+function searchCustomers() {
+
+    let keyword = $("#search-box").val().toLowerCase().trim();
+
+    if (keyword === "") {
+        renderCustomers(customersData);
+        return;
+    }
+
+    let filtered = customersData.filter(customer =>
+        customer.id.toLowerCase().includes(keyword) ||
+        customer.name.toLowerCase().includes(keyword)
+    );
+
+    renderCustomers(filtered);
+}
+
+
+// COMMON ERROR HANDLER (for validation errors @Valid annotation in controller)
 function handleAjaxError(error) {
 
     if (!error.responseJSON) {
@@ -160,7 +188,7 @@ function handleAjaxError(error) {
 
     let response = error.responseJSON;
 
-    // Validation errors (field-level)
+    // Validation errors (@Valid)
     if (typeof response.data === "object" && response.data !== null) {
 
         let messages = "";
@@ -172,15 +200,24 @@ function handleAjaxError(error) {
         alert(messages.trim());
 
     } else if (response.data) {
-        // Business exception message
         alert(response.data);
-
     } else {
         alert(response.message);
     }
 }
 
+
 // INIT
 $(document).ready(function () {
+
     getALLCustomers();
+
+    $("#btn-search").click(searchCustomers);
+
+    $("#search-box").on("keyup", function (e) {
+        if (e.key === "Enter") {
+            searchCustomers();
+        }
+    });
+
 });
