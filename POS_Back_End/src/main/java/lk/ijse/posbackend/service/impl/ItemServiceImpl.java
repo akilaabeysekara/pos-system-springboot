@@ -5,42 +5,62 @@ import lk.ijse.posbackend.entity.Item;
 import lk.ijse.posbackend.repository.ItemRepository;
 import lk.ijse.posbackend.service.ItemService;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ItemServiceImpl implements ItemService {
 
-    @Autowired
-    private ItemRepository itemRepository;
-    @Autowired
-    private ModelMapper modelMapper;
+    private final ItemRepository itemRepository;
+    private final ModelMapper modelMapper;
 
-    @Override
-    public void saveItem(ItemDTO itemDTO) {
-        itemRepository.save(modelMapper.map(itemDTO, Item.class));
+    public ItemServiceImpl(ItemRepository itemRepository,
+                           ModelMapper modelMapper) {
+        this.itemRepository = itemRepository;
+        this.modelMapper = modelMapper;
     }
 
     @Override
-    public void updateItem(ItemDTO itemDTO) {
-        itemRepository.save(modelMapper.map(itemDTO, Item.class));
+    public boolean saveItem(ItemDTO dto) {
+
+        if (itemRepository.existsById(dto.getId())) {
+            return false;
+        }
+
+        itemRepository.save(modelMapper.map(dto, Item.class));
+        return true;
     }
 
     @Override
-    public void deleteItem(String code) {
+    public boolean updateItem(ItemDTO dto) {
+
+        if (!itemRepository.existsById(dto.getId())) {
+            return false;
+        }
+
+        itemRepository.save(modelMapper.map(dto, Item.class));
+        return true;
+    }
+
+    @Override
+    public boolean deleteItem(String code) {
+
+        if (!itemRepository.existsById(code)) {
+            return false;
+        }
+
         itemRepository.deleteById(code);
+        return true;
     }
 
     @Override
     public List<ItemDTO> getAllItems() {
-        List<Item> items = itemRepository.findAll();
-        List<ItemDTO> itemDTOS = new ArrayList<>();
-        for (Item item : items) {
-            itemDTOS.add(modelMapper.map(item, ItemDTO.class));
-        }
-        return itemDTOS;
+
+        return itemRepository.findAll()
+                .stream()
+                .map(item -> modelMapper.map(item, ItemDTO.class))
+                .collect(Collectors.toList());
     }
 }
