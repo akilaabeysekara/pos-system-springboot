@@ -6,6 +6,6 @@ import java.util.List;
 public interface PaymentService {
 
     void createPayment(String orderId);
-
     List<PaymentDTO> getAllPayments();
+
 }

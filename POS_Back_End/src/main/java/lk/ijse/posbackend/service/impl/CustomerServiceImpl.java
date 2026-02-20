@@ -2,6 +2,7 @@ package lk.ijse.posbackend.service.impl;
 
 import lk.ijse.posbackend.dto.CustomerDTO;
 import lk.ijse.posbackend.entity.Customer;
+import lk.ijse.posbackend.exception.CustomException;
 import lk.ijse.posbackend.repository.CustomerRepository;
 import lk.ijse.posbackend.service.CustomerService;
 import org.modelmapper.ModelMapper;
@@ -23,36 +24,33 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public boolean saveCustomer(CustomerDTO dto) {
+    public void saveCustomer(CustomerDTO dto) {
 
         if (customerRepository.existsById(dto.getId())) {
-            return false;
+            throw new CustomException("Customer ID already exists");
         }
 
         customerRepository.save(modelMapper.map(dto, Customer.class));
-        return true;
     }
 
     @Override
-    public boolean updateCustomer(CustomerDTO dto) {
+    public void updateCustomer(CustomerDTO dto) {
 
         if (!customerRepository.existsById(dto.getId())) {
-            return false;
+            throw new CustomException("Customer not found");
         }
 
         customerRepository.save(modelMapper.map(dto, Customer.class));
-        return true;
     }
 
     @Override
-    public boolean deleteCustomer(String id) {
+    public void deleteCustomer(String id) {
 
         if (!customerRepository.existsById(id)) {
-            return false;
+            throw new CustomException("Customer not found");
         }
 
         customerRepository.deleteById(id);
-        return true;
     }
 
     @Override

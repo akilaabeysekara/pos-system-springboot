@@ -19,13 +19,7 @@ public class CustomerController {
     public ResponseEntity<APIResponse<String>> saveCustomer(
             @RequestBody CustomerDTO dto) {
 
-        if (!customerService.saveCustomer(dto)) {
-            return ResponseEntity
-                    .status(400)
-                    .body(new APIResponse<>(400,
-                            "Customer ID already exists",
-                            null));
-        }
+        customerService.saveCustomer(dto);
 
         return ResponseEntity
                 .status(201)
@@ -38,13 +32,7 @@ public class CustomerController {
     public ResponseEntity<APIResponse<String>> updateCustomer(
             @RequestBody CustomerDTO dto) {
 
-        if (!customerService.updateCustomer(dto)) {
-            return ResponseEntity
-                    .status(404)
-                    .body(new APIResponse<>(404,
-                            "Customer not found",
-                            null));
-        }
+        customerService.updateCustomer(dto);
 
         return ResponseEntity.ok(
                 new APIResponse<>(200,
@@ -56,13 +44,7 @@ public class CustomerController {
     public ResponseEntity<APIResponse<String>> deleteCustomer(
             @PathVariable String id) {
 
-        if (!customerService.deleteCustomer(id)) {
-            return ResponseEntity
-                    .status(404)
-                    .body(new APIResponse<>(404,
-                            "Customer not found",
-                            null));
-        }
+        customerService.deleteCustomer(id);
 
         return ResponseEntity.ok(
                 new APIResponse<>(200,
