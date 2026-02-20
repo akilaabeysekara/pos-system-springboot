@@ -13,4 +13,5 @@ public class OrderDetailDTO {
     private double price;
     private int qty;
     private double total;
+    private String date;
 }

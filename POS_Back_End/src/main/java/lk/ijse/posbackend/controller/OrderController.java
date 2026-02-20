@@ -2,23 +2,39 @@ package lk.ijse.posbackend.controller;
 
 import lk.ijse.posbackend.dto.OrderDTO;
 import lk.ijse.posbackend.service.OrderService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin
 @RestController
 @RequestMapping("api/v1/order")
+@RequiredArgsConstructor
 public class OrderController {
-    @Autowired
-    private OrderService orderService;
+
+    private final OrderService orderService;
 
     @PostMapping
-    public ResponseEntity<Void> saveOrder(@RequestBody OrderDTO orderDTO) {
-        // Changed method name to match the interface definition
-        orderService.PlaceOrder(orderDTO);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    public ResponseEntity<String> saveOrder(@RequestBody OrderDTO orderDTO) {
+
+        boolean result = orderService.placeOrder(orderDTO);
+
+        if (!result) {
+            return ResponseEntity
+                    .badRequest()
+                    .body("Order ID already exists");
+        }
+
+        return ResponseEntity
+                .status(201)
+                .body("Order placed successfully");
     }
+
+    @GetMapping
+    public ResponseEntity<?> getAllOrders() {
+        return ResponseEntity.ok(orderService.getAllOrders());
+    }
+
+
 
 }

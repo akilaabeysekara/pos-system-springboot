@@ -2,7 +2,11 @@ package lk.ijse.posbackend.service;
 
 import lk.ijse.posbackend.dto.OrderDTO;
 
+import java.util.List;
+
 public interface OrderService {
-    void PlaceOrder(OrderDTO orderDTO);
+
+    boolean placeOrder(OrderDTO orderDTO);
+    List<OrderDTO> getAllOrders();
 
 }

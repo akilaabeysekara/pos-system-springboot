@@ -15,6 +15,8 @@ import lk.ijse.posbackend.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -26,45 +28,46 @@ public class OrderServiceImpl implements OrderService {
     private final ItemRepository itemRepository;
 
     @Override
-    public void PlaceOrder(OrderDTO dto) {
+    public boolean placeOrder(OrderDTO dto) {
 
-        // CHECK ORDER ID DUPLICATE
+        // Return false if order ID already exists
         if (orderRepository.existsById(dto.getOrderId())) {
-            throw new RuntimeException("Order ID already exists: " + dto.getOrderId());
+            return false;
         }
 
-        //  VALIDATE CUSTOMER
-        Customer customer = customerRepository.findById(dto.getCustomerId())
-                .orElseThrow(() ->
-                        new RuntimeException("Customer not found with ID: " + dto.getCustomerId()));
+        // Validate customer existence
+        Customer customer = customerRepository
+                .findById(dto.getCustomerId())
+                .orElse(null);
 
-        // SAVE ORDER
+        if (customer == null) {
+            return false;
+        }
+
         Orders order = new Orders();
         order.setOrderId(dto.getOrderId());
         order.setCustomerId(dto.getCustomerId());
 
         orderRepository.save(order);
 
-        // SAVE ORDER DETAILS
         for (OrderDetailDTO detailDTO : dto.getOrderDetails()) {
 
-            //  CHECK ORDER DETAIL DUPLICATE
+            // Prevent duplicate order detail ID
             if (orderDetailRepository.existsById(detailDTO.getId())) {
-                throw new RuntimeException("Order Detail ID already exists: " + detailDTO.getId());
+                return false;
             }
 
-            //  VALIDATE ITEM
-            Item item = itemRepository.findById(detailDTO.getItemId())
-                    .orElseThrow(() ->
-                            new RuntimeException("Item not found with ID: " + detailDTO.getItemId()));
+            Item item = itemRepository
+                    .findById(detailDTO.getItemId())
+                    .orElse(null);
 
-            //  CHECK STOCK
+            if (item == null) {
+                return false;
+            }
+
+            // Validate stock before deduction
             if (item.getQty() < detailDTO.getQty()) {
-                throw new RuntimeException(
-                        "Insufficient stock for item: " + detailDTO.getItemId() +
-                                ". Available: " + item.getQty() +
-                                ", Required: " + detailDTO.getQty()
-                );
+                return false;
             }
 
             OrderDetail orderDetail = new OrderDetail();
@@ -74,12 +77,28 @@ public class OrderServiceImpl implements OrderService {
             orderDetail.setPrice(detailDTO.getPrice());
             orderDetail.setQty(detailDTO.getQty());
             orderDetail.setTotal(detailDTO.getTotal());
+            orderDetail.setDate(detailDTO.getDate());
 
             orderDetailRepository.save(orderDetail);
 
-            //  UPDATE STOCK
+            // Update item stock
             item.setQty(item.getQty() - detailDTO.getQty());
             itemRepository.save(item);
         }
+
+        return true;
+    }
+    @Override
+    public List<OrderDTO> getAllOrders() {
+
+        return orderRepository.findAll()
+                .stream()
+                .map(order -> {
+                    OrderDTO dto = new OrderDTO();
+                    dto.setOrderId(order.getOrderId());
+                    dto.setCustomerId(order.getCustomerId());
+                    return dto;
+                })
+                .toList();
     }
 }
