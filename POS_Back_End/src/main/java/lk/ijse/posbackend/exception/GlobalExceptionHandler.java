@@ -38,12 +38,14 @@ public class GlobalExceptionHandler {
                         "Bad Request",errors
                 ),HttpStatus.BAD_REQUEST);
     }
-
     @ExceptionHandler(CustomException.class)
+
+
     public ResponseEntity<APIResponse<String>> handleCustomException(CustomException e) {
+
         return new ResponseEntity<>(
                 new APIResponse<>(
-                        HttpStatus.BAD_REQUEST.value(),
+                        400,
                         "Business Error",
                         e.getMessage()
                 ),

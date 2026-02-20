@@ -5,8 +5,9 @@ import java.util.List;
 
 public interface ItemService {
 
-    boolean saveItem(ItemDTO itemDTO);
-    boolean updateItem(ItemDTO itemDTO);
-    boolean deleteItem(String code);
+    void saveItem(ItemDTO itemDTO);
+    void updateItem(ItemDTO itemDTO);
+    void deleteItem(String code);
     List<ItemDTO> getAllItems();
+
 }

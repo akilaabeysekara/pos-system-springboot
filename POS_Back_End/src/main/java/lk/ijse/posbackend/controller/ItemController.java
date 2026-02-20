@@ -19,13 +19,7 @@ public class ItemController {
     public ResponseEntity<APIResponse<String>> saveItem(
             @RequestBody ItemDTO dto) {
 
-        if (!itemService.saveItem(dto)) {
-            return ResponseEntity
-                    .status(400)
-                    .body(new APIResponse<>(400,
-                            "Item ID already exists",
-                            null));
-        }
+        itemService.saveItem(dto);
 
         return ResponseEntity
                 .status(201)
@@ -38,13 +32,7 @@ public class ItemController {
     public ResponseEntity<APIResponse<String>> updateItem(
             @RequestBody ItemDTO dto) {
 
-        if (!itemService.updateItem(dto)) {
-            return ResponseEntity
-                    .status(404)
-                    .body(new APIResponse<>(404,
-                            "Item not found",
-                            null));
-        }
+        itemService.updateItem(dto);
 
         return ResponseEntity.ok(
                 new APIResponse<>(200,
@@ -56,13 +44,7 @@ public class ItemController {
     public ResponseEntity<APIResponse<String>> deleteItem(
             @PathVariable String code) {
 
-        if (!itemService.deleteItem(code)) {
-            return ResponseEntity
-                    .status(404)
-                    .body(new APIResponse<>(404,
-                            "Item not found",
-                            null));
-        }
+        itemService.deleteItem(code);
 
         return ResponseEntity.ok(
                 new APIResponse<>(200,

@@ -1,6 +1,7 @@
 // GLOBAL DATA
 let itemsData = [];
 
+
 // SAVE ITEM
 function saveItem() {
 
@@ -29,18 +30,22 @@ function saveItem() {
 
             alert(response.message);
 
-            if (response.status === 201) {
-                getAllItems();
-                clearItemForm();
-            }
+            getAllItems();
+            clearItemForm();
         },
 
         error: function (error) {
 
             if (error.responseJSON) {
-                alert(error.responseJSON.message);
+
+                if (error.responseJSON.data) {
+                    alert(error.responseJSON.data);
+                } else {
+                    alert(error.responseJSON.message);
+                }
+
             } else {
-                alert("Error saving item");
+                alert("Server error");
             }
         }
     });
@@ -75,18 +80,22 @@ function updateItem() {
 
             alert(response.message);
 
-            if (response.status === 200) {
-                getAllItems();
-                clearItemForm();
-            }
+            getAllItems();
+            clearItemForm();
         },
 
         error: function (error) {
 
             if (error.responseJSON) {
-                alert(error.responseJSON.message);
+
+                if (error.responseJSON.data) {
+                    alert(error.responseJSON.data);
+                } else {
+                    alert(error.responseJSON.message);
+                }
+
             } else {
-                alert("Error updating item");
+                alert("Server error");
             }
         }
     });
@@ -115,18 +124,22 @@ function deleteItem() {
 
             alert(response.message);
 
-            if (response.status === 200) {
-                getAllItems();
-                clearItemForm();
-            }
+            getAllItems();
+            clearItemForm();
         },
 
         error: function (error) {
 
             if (error.responseJSON) {
-                alert(error.responseJSON.message);
+
+                if (error.responseJSON.data) {
+                    alert(error.responseJSON.data);
+                } else {
+                    alert(error.responseJSON.message);
+                }
+
             } else {
-                alert("Error deleting item");
+                alert("Server error");
             }
         }
     });
@@ -159,8 +172,9 @@ function getAllItems() {
 
                 $("#item-table tbody").append(row);
             });
-        }
-        , error: function () {
+        },
+
+        error: function () {
             alert("Error loading items");
         }
     });

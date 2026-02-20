@@ -1,6 +1,7 @@
 // GLOBAL DATA
 let customersData = [];
 
+
 // SAVE CUSTOMER
 function saveCustomer() {
 
@@ -24,18 +25,23 @@ function saveCustomer() {
 
             alert(response.message);
 
-            if (response.status === 201) {
-                getALLCustomers();
-                clearCustomerForm();
-            }
+            getALLCustomers();
+            clearCustomerForm();
         },
 
         error: function (error) {
 
             if (error.responseJSON) {
-                alert(error.responseJSON.message);
+
+                // If business exception
+                if (error.responseJSON.data) {
+                    alert(error.responseJSON.data);
+                } else {
+                    alert(error.responseJSON.message);
+                }
+
             } else {
-                alert("Error saving customer");
+                alert("Server error");
             }
         }
     });
@@ -65,18 +71,22 @@ function updateCustomer() {
 
             alert(response.message);
 
-            if (response.status === 200) {
-                getALLCustomers();
-                clearCustomerForm();
-            }
+            getALLCustomers();
+            clearCustomerForm();
         },
 
         error: function (error) {
 
             if (error.responseJSON) {
-                alert(error.responseJSON.message);
+
+                if (error.responseJSON.data) {
+                    alert(error.responseJSON.data);
+                } else {
+                    alert(error.responseJSON.message);
+                }
+
             } else {
-                alert("Error updating customer");
+                alert("Server error");
             }
         }
     });
@@ -105,18 +115,22 @@ function deleteCustomer() {
 
             alert(response.message);
 
-            if (response.status === 200) {
-                getALLCustomers();
-                clearCustomerForm();
-            }
+            getALLCustomers();
+            clearCustomerForm();
         },
 
         error: function (error) {
 
             if (error.responseJSON) {
-                alert(error.responseJSON.message);
+
+                if (error.responseJSON.data) {
+                    alert(error.responseJSON.data);
+                } else {
+                    alert(error.responseJSON.message);
+                }
+
             } else {
-                alert("Error deleting customer");
+                alert("Server error");
             }
         }
     });

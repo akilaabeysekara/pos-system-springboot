@@ -2,6 +2,7 @@ package lk.ijse.posbackend.service.impl;
 
 import lk.ijse.posbackend.dto.ItemDTO;
 import lk.ijse.posbackend.entity.Item;
+import lk.ijse.posbackend.exception.CustomException;
 import lk.ijse.posbackend.repository.ItemRepository;
 import lk.ijse.posbackend.service.ItemService;
 import org.modelmapper.ModelMapper;
@@ -23,36 +24,33 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public boolean saveItem(ItemDTO dto) {
+    public void saveItem(ItemDTO dto) {
 
         if (itemRepository.existsById(dto.getId())) {
-            return false;
+            throw new CustomException("Item ID already exists");
         }
 
         itemRepository.save(modelMapper.map(dto, Item.class));
-        return true;
     }
 
     @Override
-    public boolean updateItem(ItemDTO dto) {
+    public void updateItem(ItemDTO dto) {
 
         if (!itemRepository.existsById(dto.getId())) {
-            return false;
+            throw new CustomException("Item not found");
         }
 
         itemRepository.save(modelMapper.map(dto, Item.class));
-        return true;
     }
 
     @Override
-    public boolean deleteItem(String code) {
+    public void deleteItem(String code) {
 
         if (!itemRepository.existsById(code)) {
-            return false;
+            throw new CustomException("Item not found");
         }
 
         itemRepository.deleteById(code);
-        return true;
     }
 
     @Override
