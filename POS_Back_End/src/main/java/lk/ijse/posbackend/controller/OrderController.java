@@ -46,4 +46,15 @@ public class OrderController {
                         "Success",
                         orderService.getAllOrders()));
     }
+
+    @GetMapping("/next-id")
+    public ResponseEntity<?> getNextOrderId() {
+
+        return ResponseEntity.ok(
+                new APIResponse<>(
+                        200,
+                        "Success",
+                        orderService.generateNextOrderId()
+                ));
+    }
 }

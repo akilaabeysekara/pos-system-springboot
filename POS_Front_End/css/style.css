@@ -132,6 +132,11 @@ button:nth-child(15) {
     color: white;
 }
 
+#order-id {
+    color: #153695;
+    font-weight: bold;
+}
+
 #btn-place-order {
     background-color: #153695;
     color: white;

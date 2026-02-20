@@ -29,5 +29,8 @@ function loadPayments() {
                 $("#payment-table tbody").append(row);
             });
         }
+        , error: function () {
+            alert("Error loading payments");
+        }
     });
 }

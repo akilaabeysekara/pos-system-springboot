@@ -160,6 +160,9 @@ function getAllItems() {
                 $("#item-table tbody").append(row);
             });
         }
+        , error: function () {
+            alert("Error loading items");
+        }
     });
 }
 

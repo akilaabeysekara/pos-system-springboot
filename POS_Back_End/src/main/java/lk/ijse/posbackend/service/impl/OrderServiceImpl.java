@@ -31,6 +31,19 @@ public class OrderServiceImpl implements OrderService {
     private final PaymentService paymentService;
 
     @Override
+    public String generateNextOrderId() {
+
+        Orders lastOrder = orderRepository.findTopByOrderByOrderIdDesc();
+
+        if (lastOrder == null) {
+            return "O001";
+        }
+
+        int num = Integer.parseInt(lastOrder.getOrderId().substring(1));
+        return String.format("O%03d", num + 1);
+    }
+
+    @Override
     public boolean placeOrder(OrderDTO dto) {
 
         if (orderRepository.existsById(dto.getOrderId())) {

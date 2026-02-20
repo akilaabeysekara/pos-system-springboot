@@ -6,7 +6,9 @@ import java.util.List;
 
 public interface OrderService {
 
+    String generateNextOrderId();
     boolean placeOrder(OrderDTO orderDTO);
     List<OrderDTO> getAllOrders();
+
 
 }

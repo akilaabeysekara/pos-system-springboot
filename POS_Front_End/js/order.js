@@ -1,7 +1,24 @@
 // GLOBAL DATA
 let cartItems = [];
 let itemsData = {};
-let existingOrderIds = new Set();
+
+
+// LOAD NEXT ORDER ID
+function loadNextOrderId() {
+
+    $.ajax({
+        type: "GET",
+        url: "http://localhost:8080/api/v1/order/next-id",
+
+        success: function (response) {
+            $("#order-id").text(response.data);
+        },
+
+        error: function () {
+            alert("Error generating Order ID");
+        }
+    });
+}
 
 
 // LOAD CUSTOMERS
@@ -67,30 +84,7 @@ function loadItems() {
 }
 
 
-// LOAD EXISTING ORDERS
-function loadExistingOrders() {
-
-    $.ajax({
-        type: "GET",
-        url: "http://localhost:8080/api/v1/order",
-
-        success: function (response) {
-
-            existingOrderIds.clear();
-
-            $.each(response.data, function (index, order) {
-                existingOrderIds.add(order.orderId);
-            });
-        }
-    });
-}
-
-
-// HELPERS
-function isOrderIdDuplicate(orderId) {
-    return existingOrderIds.has(orderId);
-}
-
+// HELPER
 function generateOrderDetailId(orderId, index) {
     return orderId + "-" + (index + 1);
 }
@@ -99,17 +93,12 @@ function generateOrderDetailId(orderId, index) {
 // ADD TO CART
 function addToCart() {
 
-    let orderId = $("#order-id").val().trim();
+    let orderId = $("#order-id").text().trim();
     let itemCode = $("#item-select").val();
     let qty = parseInt($("#order-qty").val());
 
     if (!orderId) {
-        alert("Please enter Order ID first");
-        return;
-    }
-
-    if (isOrderIdDuplicate(orderId)) {
-        alert("Order ID already exists.");
+        alert("Order ID not generated");
         return;
     }
 
@@ -164,7 +153,7 @@ function updateCartTable() {
 
     $("#cart-table tbody").empty();
 
-    let orderId = $("#order-id").val().trim();
+    let orderId = $("#order-id").text().trim();
 
     $.each(cartItems, function (index, item) {
 
@@ -252,18 +241,8 @@ function updateTotalAmount() {
 // PLACE ORDER
 function placeOrder() {
 
-    let orderId = $("#order-id").val().trim();
+    let orderId = $("#order-id").text().trim();
     let customerId = $("#customer-select").val();
-
-    if (!orderId) {
-        alert("Enter Order ID");
-        return;
-    }
-
-    if (isOrderIdDuplicate(orderId)) {
-        alert("Order ID already exists.");
-        return;
-    }
 
     if (!customerId) {
         alert("Select customer");
@@ -305,10 +284,9 @@ function placeOrder() {
 
             if (response.status === 201) {
 
-                existingOrderIds.add(orderId);
-
                 clearOrderForm();
                 loadItems();
+                loadNextOrderId(); // Generate new ID
             }
         },
 
@@ -327,7 +305,6 @@ function placeOrder() {
 // CLEAR FORM
 function clearOrderForm() {
 
-    $("#order-id").val("");
     $("#customer-select").val("");
     $("#item-select").val("");
     $("#order-qty").val("");
@@ -342,9 +319,9 @@ function clearOrderForm() {
 // INIT
 $(document).ready(function () {
 
+    loadNextOrderId();
     loadCustomers();
     loadItems();
-    loadExistingOrders();
 
     $("#btn-add-to-cart").click(addToCart);
     $("#btn-place-order").click(placeOrder);
