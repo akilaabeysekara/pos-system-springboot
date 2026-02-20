@@ -1,9 +1,9 @@
-// GLOBAL DATA
+//  GLOBAL DATA
 let cartItems = [];
 let itemsData = {};
 
 
-// LOAD NEXT ORDER ID
+//  LOAD NEXT ORDER ID
 function loadNextOrderId() {
 
     $.ajax({
@@ -14,14 +14,14 @@ function loadNextOrderId() {
             $("#order-id").text(response.data);
         },
 
-        error: function () {
-            alert("Error generating Order ID");
+        error: function (error) {
+            handleAjaxError(error);
         }
     });
 }
 
 
-// LOAD CUSTOMERS
+//  LOAD CUSTOMERS
 function loadCustomers() {
 
     $.ajax({
@@ -41,14 +41,14 @@ function loadCustomers() {
             $("#customer-select").html(options);
         },
 
-        error: function () {
-            alert("Error loading customers");
+        error: function (error) {
+            handleAjaxError(error);
         }
     });
 }
 
 
-// LOAD ITEMS
+//  LOAD ITEMS
 function loadItems() {
 
     $.ajax({
@@ -77,8 +77,8 @@ function loadItems() {
             $("#item-select").html(options);
         },
 
-        error: function () {
-            alert("Error loading items");
+        error: function (error) {
+            handleAjaxError(error);
         }
     });
 }
@@ -152,7 +152,6 @@ function addToCart() {
 function updateCartTable() {
 
     $("#cart-table tbody").empty();
-
     let orderId = $("#order-id").text().trim();
 
     $.each(cartItems, function (index, item) {
@@ -271,7 +270,6 @@ function placeOrder() {
         type: "POST",
         url: "http://localhost:8080/api/v1/order",
         contentType: "application/json",
-
         data: JSON.stringify({
             orderId: orderId,
             customerId: customerId,
@@ -282,21 +280,13 @@ function placeOrder() {
 
             alert(response.message);
 
-            if (response.status === 201) {
-
-                clearOrderForm();
-                loadItems();
-                loadNextOrderId(); // Generate new ID
-            }
+            clearOrderForm();
+            loadItems();
+            loadNextOrderId();
         },
 
         error: function (error) {
-
-            if (error.responseJSON) {
-                alert(error.responseJSON.message);
-            } else {
-                alert("Error placing order");
-            }
+            handleAjaxError(error);
         }
     });
 }
@@ -313,6 +303,23 @@ function clearOrderForm() {
 
     updateCartTable();
     updateTotalAmount();
+}
+
+
+// COMMON ERROR HANDLER
+function handleAjaxError(error) {
+
+    if (error.responseJSON) {
+
+        if (error.responseJSON.data) {
+            alert(error.responseJSON.data);
+        } else {
+            alert(error.responseJSON.message);
+        }
+
+    } else {
+        alert("Server error");
+    }
 }
 
 

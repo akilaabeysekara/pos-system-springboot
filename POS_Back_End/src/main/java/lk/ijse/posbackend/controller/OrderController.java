@@ -19,15 +19,7 @@ public class OrderController {
     public ResponseEntity<APIResponse<String>> saveOrder(
             @RequestBody OrderDTO orderDTO) {
 
-        if (!orderService.placeOrder(orderDTO)) {
-
-            return ResponseEntity
-                    .status(400)
-                    .body(new APIResponse<>(
-                            400,
-                            "Order failed: Duplicate ID or insufficient stock",
-                            null));
-        }
+        orderService.placeOrder(orderDTO);
 
         return ResponseEntity
                 .status(201)
@@ -48,13 +40,12 @@ public class OrderController {
     }
 
     @GetMapping("/next-id")
-    public ResponseEntity<?> getNextOrderId() {
+    public ResponseEntity<APIResponse<String>> getNextOrderId() {
 
         return ResponseEntity.ok(
                 new APIResponse<>(
                         200,
                         "Success",
-                        orderService.generateNextOrderId()
-                ));
+                        orderService.generateNextOrderId()));
     }
 }

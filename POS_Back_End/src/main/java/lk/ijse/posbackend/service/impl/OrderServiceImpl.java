@@ -3,14 +3,9 @@ package lk.ijse.posbackend.service.impl;
 import jakarta.transaction.Transactional;
 import lk.ijse.posbackend.dto.OrderDTO;
 import lk.ijse.posbackend.dto.OrderDetailDTO;
-import lk.ijse.posbackend.entity.Customer;
-import lk.ijse.posbackend.entity.Item;
-import lk.ijse.posbackend.entity.Orders;
-import lk.ijse.posbackend.entity.OrderDetail;
-import lk.ijse.posbackend.repository.CustomerRepository;
-import lk.ijse.posbackend.repository.ItemRepository;
-import lk.ijse.posbackend.repository.OrderRepository;
-import lk.ijse.posbackend.repository.OrderDetailRepository;
+import lk.ijse.posbackend.entity.*;
+import lk.ijse.posbackend.exception.CustomException;
+import lk.ijse.posbackend.repository.*;
 import lk.ijse.posbackend.service.OrderService;
 import lk.ijse.posbackend.service.PaymentService;
 import lombok.RequiredArgsConstructor;
@@ -44,33 +39,26 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public boolean placeOrder(OrderDTO dto) {
+    public void placeOrder(OrderDTO dto) {
 
         if (orderRepository.existsById(dto.getOrderId())) {
-            return false;
+            throw new CustomException("Order ID already exists");
         }
 
         Customer customer = customerRepository
                 .findById(dto.getCustomerId())
-                .orElse(null);
+                .orElseThrow(() -> new CustomException("Customer not found"));
 
-        if (customer == null) {
-            return false;
-        }
-
-        // Validate all items first before saving anything
         for (OrderDetailDTO detailDTO : dto.getOrderDetails()) {
 
             Item item = itemRepository
                     .findById(detailDTO.getItemId())
-                    .orElse(null);
-
-            if (item == null) {
-                return false;
-            }
+                    .orElseThrow(() ->
+                            new CustomException("Item not found: " + detailDTO.getItemId()));
 
             if (item.getQty() < detailDTO.getQty()) {
-                return false;
+                throw new CustomException(
+                        "Insufficient stock for item: " + detailDTO.getItemId());
             }
         }
 
@@ -82,9 +70,7 @@ public class OrderServiceImpl implements OrderService {
 
         for (OrderDetailDTO detailDTO : dto.getOrderDetails()) {
 
-            Item item = itemRepository
-                    .findById(detailDTO.getItemId())
-                    .orElse(null);
+            Item item = itemRepository.findById(detailDTO.getItemId()).get();
 
             OrderDetail orderDetail = new OrderDetail();
             orderDetail.setOrder(order);
@@ -94,15 +80,14 @@ public class OrderServiceImpl implements OrderService {
             orderDetail.setQty(detailDTO.getQty());
             orderDetail.setTotal(detailDTO.getTotal());
             orderDetail.setDateTime(LocalDateTime.now());
+
             orderDetailRepository.save(orderDetail);
 
             item.setQty(item.getQty() - detailDTO.getQty());
             itemRepository.save(item);
         }
 
-        //call payment service after every thing is done
         paymentService.createPayment(dto.getOrderId());
-        return true;
     }
 
     @Override
