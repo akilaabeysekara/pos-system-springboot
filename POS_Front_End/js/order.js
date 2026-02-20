@@ -149,7 +149,6 @@ function addToCart() {
 }
 
 
-// UPDATE CART TABLE
 function updateCartTable() {
 
     $("#cart-table tbody").empty();
@@ -161,16 +160,70 @@ function updateCartTable() {
         let orderDetailId = generateOrderDetailId(orderId, index);
 
         $("#cart-table tbody").append(`
-            <tr style="cursor:pointer;">
+            <tr>
                 <td>${orderDetailId}</td>
                 <td>${item.itemName}</td>
-                <td>${item.qty}</td>
+                <td>
+                    <input type="number" 
+                           min="1" 
+                           value="${item.qty}" 
+                           class="update-qty" 
+                           data-index="${index}">
+                </td>
                 <td>Rs. ${item.unitPrice.toFixed(2)}</td>
                 <td>Rs. ${item.total.toFixed(2)}</td>
+                <td>
+                    <button class="btn-update" data-index="${index}">Update</button>
+                    <button class="btn-delete" data-index="${index}">Delete</button>
+                </td>
             </tr>
         `);
     });
 }
+
+// Update quantity
+$(document).on("click", ".btn-update", function () {
+
+    let index = $(this).data("index");
+    let newQty = parseInt(
+        $(`input.update-qty[data-index='${index}']`).val()
+    );
+
+    if (!newQty || newQty <= 0) {
+        alert("Invalid quantity");
+        return;
+    }
+
+    let itemCode = cartItems[index].itemCode;
+    let availableQty = itemsData[itemCode].availableQty;
+
+    if (newQty > availableQty) {
+        alert("Insufficient stock! Available: " + availableQty);
+        return;
+    }
+
+    cartItems[index].qty = newQty;
+    cartItems[index].total = newQty * cartItems[index].unitPrice;
+
+    updateCartTable();
+    updateTotalAmount();
+});
+
+
+// Delete item from cart
+$(document).on("click", ".btn-delete", function () {
+
+    if (!confirm("Are you sure remove this item?")) {
+        return;
+    }
+
+    let index = $(this).data("index");
+
+    cartItems.splice(index, 1);
+
+    updateCartTable();
+    updateTotalAmount();
+});
 
 
 // UPDATE TOTAL

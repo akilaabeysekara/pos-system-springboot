@@ -161,3 +161,52 @@ th, td {
 tbody tr:hover {
     background-color: #ecf0f1;
 }
+
+
+/* Make cart table layout fixed */
+#cart-table {
+    table-layout: fixed;
+}
+
+/* Equal column width */
+#cart-table th,
+#cart-table td {
+    width: 16.66%;
+}
+
+
+/* Center quantity text */
+.update-qty {
+    text-align: center;
+    width: 70px;
+    padding: 5px;
+}
+
+/* Update button */
+.btn-update {
+    background-color: #27ae60;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* Delete button */
+.btn-delete {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* Hover effects */
+.btn-update:hover {
+    background-color: #219150;
+}
+
+.btn-delete:hover {
+    background-color: #c0392b;
+}
