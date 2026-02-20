@@ -6,6 +6,7 @@ import lk.ijse.posbackend.entity.*;
 import lk.ijse.posbackend.dto.*;
 import lk.ijse.posbackend.repository.*;
 import lk.ijse.posbackend.service.PaymentService;
+import lk.ijse.posbackend.exception.CustomException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,19 +24,24 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public void createPayment(String orderId) {
 
-        Orders order = orderRepository.findById(orderId).orElse(null);
-        if (order == null) return;
+        Orders order = orderRepository.findById(orderId)
+                .orElseThrow(() ->
+                        new CustomException("Order not found for payment"));
 
-        Customer customer =
-                customerRepository.findById(order.getCustomerId()).orElse(null);
-
-        String customerName = customer != null ? customer.getName() : "Unknown";
+        Customer customer = customerRepository
+                .findById(order.getCustomerId())
+                .orElseThrow(() ->
+                        new CustomException("Customer not found for payment"));
 
         List<OrderDetail> details =
                 orderDetailRepository.findAll()
                         .stream()
                         .filter(d -> d.getOrder().getOrderId().equals(orderId))
                         .toList();
+
+        if (details.isEmpty()) {
+            throw new CustomException("Order has no items");
+        }
 
         String itemNames = details.stream()
                 .map(OrderDetail::getItemId)
@@ -50,7 +56,7 @@ public class PaymentServiceImpl implements PaymentService {
         Payment payment = new Payment(
                 nextId,
                 orderId,
-                customerName,
+                customer.getName(),
                 itemNames,
                 totalAmount,
                 "CASH",

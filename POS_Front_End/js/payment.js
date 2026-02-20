@@ -28,9 +28,26 @@ function loadPayments() {
 
                 $("#payment-table tbody").append(row);
             });
-        }
-        , error: function () {
-            alert("Error loading payments");
+        },
+
+        error: function (error) {
+            handleAjaxError(error);
         }
     });
+}
+
+
+function handleAjaxError(error) {
+
+    if (error.responseJSON) {
+
+        if (error.responseJSON.data) {
+            alert(error.responseJSON.data);
+        } else {
+            alert(error.responseJSON.message);
+        }
+
+    } else {
+        alert("Server error");
+    }
 }

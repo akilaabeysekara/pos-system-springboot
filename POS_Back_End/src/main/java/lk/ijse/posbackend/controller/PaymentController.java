@@ -15,7 +15,7 @@ public class PaymentController {
     private final PaymentService paymentService;
 
     @GetMapping
-    public ResponseEntity<?> getAllPayments() {
+    public ResponseEntity<APIResponse<?>> getAllPayments() {
 
         return ResponseEntity.ok(
                 new APIResponse<>(
