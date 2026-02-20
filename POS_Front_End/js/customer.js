@@ -1,7 +1,6 @@
 // GLOBAL DATA
 let customersData = [];
 
-
 // SAVE CUSTOMER
 function saveCustomer() {
 
@@ -9,11 +8,6 @@ function saveCustomer() {
     let name = $('#customer_name').val().trim();
     let address = $('#customer_address').val().trim();
     let phone = $('#customer_phone').val().trim();
-
-    if (id === "" || name === "" || address === "" || phone === "") {
-        alert("Please fill all fields");
-        return;
-    }
 
     $.ajax({
         url: 'http://localhost:8080/api/v1/customer',
@@ -29,21 +23,7 @@ function saveCustomer() {
             clearCustomerForm();
         },
 
-        error: function (error) {
-
-            if (error.responseJSON) {
-
-                // If business exception
-                if (error.responseJSON.data) {
-                    alert(error.responseJSON.data);
-                } else {
-                    alert(error.responseJSON.message);
-                }
-
-            } else {
-                alert("Server error");
-            }
-        }
+        error: handleAjaxError
     });
 }
 
@@ -55,11 +35,6 @@ function updateCustomer() {
     let name = $('#customer_name').val().trim();
     let address = $('#customer_address').val().trim();
     let phone = $('#customer_phone').val().trim();
-
-    if (id === "" || name === "" || address === "" || phone === "") {
-        alert("Please fill all fields");
-        return;
-    }
 
     $.ajax({
         url: 'http://localhost:8080/api/v1/customer',
@@ -75,20 +50,7 @@ function updateCustomer() {
             clearCustomerForm();
         },
 
-        error: function (error) {
-
-            if (error.responseJSON) {
-
-                if (error.responseJSON.data) {
-                    alert(error.responseJSON.data);
-                } else {
-                    alert(error.responseJSON.message);
-                }
-
-            } else {
-                alert("Server error");
-            }
-        }
+        error: handleAjaxError
     });
 }
 
@@ -98,7 +60,7 @@ function deleteCustomer() {
 
     let id = $('#customer_id').val().trim();
 
-    if (id === "") {
+    if (!id) {
         alert("Please select a customer");
         return;
     }
@@ -119,20 +81,7 @@ function deleteCustomer() {
             clearCustomerForm();
         },
 
-        error: function (error) {
-
-            if (error.responseJSON) {
-
-                if (error.responseJSON.data) {
-                    alert(error.responseJSON.data);
-                } else {
-                    alert(error.responseJSON.message);
-                }
-
-            } else {
-                alert("Server error");
-            }
-        }
+        error: handleAjaxError
     });
 }
 
@@ -165,9 +114,7 @@ function getALLCustomers() {
             });
         },
 
-        error: function () {
-            alert("Error loading customers");
-        }
+        error: handleAjaxError
     });
 }
 
@@ -203,6 +150,35 @@ function clearCustomerForm() {
     $('#customer_phone').val('');
 }
 
+// COMMON ERROR HANDLER
+function handleAjaxError(error) {
+
+    if (!error.responseJSON) {
+        alert("Server error occurred");
+        return;
+    }
+
+    let response = error.responseJSON;
+
+    // Validation errors (field-level)
+    if (typeof response.data === "object" && response.data !== null) {
+
+        let messages = "";
+
+        for (let field in response.data) {
+            messages += response.data[field] + "\n";
+        }
+
+        alert(messages.trim());
+
+    } else if (response.data) {
+        // Business exception message
+        alert(response.data);
+
+    } else {
+        alert(response.message);
+    }
+}
 
 // INIT
 $(document).ready(function () {

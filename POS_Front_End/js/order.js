@@ -1,9 +1,8 @@
-//  GLOBAL DATA
+// GLOBAL DATA
 let cartItems = [];
 let itemsData = {};
 
-
-//  LOAD NEXT ORDER ID
+// LOAD NEXT ORDER ID
 function loadNextOrderId() {
 
     $.ajax({
@@ -14,14 +13,12 @@ function loadNextOrderId() {
             $("#order-id").text(response.data);
         },
 
-        error: function (error) {
-            handleAjaxError(error);
-        }
+        error: handleAjaxError
     });
 }
 
 
-//  LOAD CUSTOMERS
+// LOAD CUSTOMERS
 function loadCustomers() {
 
     $.ajax({
@@ -41,14 +38,12 @@ function loadCustomers() {
             $("#customer-select").html(options);
         },
 
-        error: function (error) {
-            handleAjaxError(error);
-        }
+        error: handleAjaxError
     });
 }
 
 
-//  LOAD ITEMS
+// LOAD ITEMS
 function loadItems() {
 
     $.ajax({
@@ -77,9 +72,7 @@ function loadItems() {
             $("#item-select").html(options);
         },
 
-        error: function (error) {
-            handleAjaxError(error);
-        }
+        error: handleAjaxError
     });
 }
 
@@ -96,11 +89,6 @@ function addToCart() {
     let orderId = $("#order-id").text().trim();
     let itemCode = $("#item-select").val();
     let qty = parseInt($("#order-qty").val());
-
-    if (!orderId) {
-        alert("Order ID not generated");
-        return;
-    }
 
     if (!itemCode) {
         alert("Please select an item");
@@ -253,18 +241,13 @@ function placeOrder() {
         return;
     }
 
-    let orderDetails = [];
-
-    $.each(cartItems, function (index, item) {
-
-        orderDetails.push({
-            id: generateOrderDetailId(orderId, index),
-            itemId: item.itemCode,
-            qty: item.qty,
-            price: item.unitPrice,
-            total: item.total
-        });
-    });
+    let orderDetails = cartItems.map((item, index) => ({
+        id: generateOrderDetailId(orderId, index),
+        itemId: item.itemCode,
+        qty: item.qty,
+        price: item.unitPrice,
+        total: item.total
+    }));
 
     $.ajax({
         type: "POST",
@@ -285,9 +268,7 @@ function placeOrder() {
             loadNextOrderId();
         },
 
-        error: function (error) {
-            handleAjaxError(error);
-        }
+        error: handleAjaxError
     });
 }
 
@@ -305,22 +286,36 @@ function clearOrderForm() {
     updateTotalAmount();
 }
 
-
 // COMMON ERROR HANDLER
 function handleAjaxError(error) {
 
-    if (error.responseJSON) {
+    if (!error.responseJSON) {
+        alert("Server error occurred");
+        return;
+    }
 
-        if (error.responseJSON.data) {
-            alert(error.responseJSON.data);
-        } else {
-            alert(error.responseJSON.message);
+    let response = error.responseJSON;
+
+    // Field validation errors (@Valid)
+    if (typeof response.data === "object" && response.data !== null) {
+
+        let messages = "";
+
+        for (let field in response.data) {
+            messages += response.data[field] + "\n";
         }
 
+        alert(messages.trim());
+
+    } else if (response.data) {
+        // Business exception
+        alert(response.data);
+
     } else {
-        alert("Server error");
+        alert(response.message);
     }
 }
+
 
 
 // INIT

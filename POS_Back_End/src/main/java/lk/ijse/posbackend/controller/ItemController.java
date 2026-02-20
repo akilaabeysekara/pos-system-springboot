@@ -1,9 +1,11 @@
 package lk.ijse.posbackend.controller;
 
+import jakarta.validation.Valid;
 import lk.ijse.posbackend.dto.ItemDTO;
 import lk.ijse.posbackend.service.ItemService;
 import lk.ijse.posbackend.util.APIResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,27 +19,33 @@ public class ItemController {
 
     @PostMapping
     public ResponseEntity<APIResponse<String>> saveItem(
-            @RequestBody ItemDTO dto) {
+            @RequestBody @Valid ItemDTO dto) {
 
         itemService.saveItem(dto);
 
-        return ResponseEntity
-                .status(201)
-                .body(new APIResponse<>(201,
+        return new ResponseEntity<>(
+                new APIResponse<>(
+                        201,
                         "Item saved successfully",
-                        null));
+                        null
+                ),
+                HttpStatus.CREATED
+        );
     }
 
     @PutMapping
     public ResponseEntity<APIResponse<String>> updateItem(
-            @RequestBody ItemDTO dto) {
+            @RequestBody @Valid ItemDTO dto) {
 
         itemService.updateItem(dto);
 
         return ResponseEntity.ok(
-                new APIResponse<>(200,
+                new APIResponse<>(
+                        200,
                         "Item updated successfully",
-                        null));
+                        null
+                )
+        );
     }
 
     @DeleteMapping("/{code}")
@@ -47,17 +55,23 @@ public class ItemController {
         itemService.deleteItem(code);
 
         return ResponseEntity.ok(
-                new APIResponse<>(200,
+                new APIResponse<>(
+                        200,
                         "Item deleted successfully",
-                        null));
+                        null
+                )
+        );
     }
 
     @GetMapping
     public ResponseEntity<APIResponse<?>> getAllItems() {
 
         return ResponseEntity.ok(
-                new APIResponse<>(200,
+                new APIResponse<>(
+                        200,
                         "Success",
-                        itemService.getAllItems()));
+                        itemService.getAllItems()
+                )
+        );
     }
 }

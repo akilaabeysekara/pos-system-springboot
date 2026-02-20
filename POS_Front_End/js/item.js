@@ -1,7 +1,6 @@
 // GLOBAL DATA
 let itemsData = [];
 
-
 // SAVE ITEM
 function saveItem() {
 
@@ -9,11 +8,6 @@ function saveItem() {
     let name = $("#item-name").val().trim();
     let price = $("#item-price").val().trim();
     let qty = $("#item-qty").val().trim();
-
-    if (id === "" || name === "" || price === "" || qty === "") {
-        alert("Please fill all fields");
-        return;
-    }
 
     $.ajax({
         type: "POST",
@@ -34,20 +28,7 @@ function saveItem() {
             clearItemForm();
         },
 
-        error: function (error) {
-
-            if (error.responseJSON) {
-
-                if (error.responseJSON.data) {
-                    alert(error.responseJSON.data);
-                } else {
-                    alert(error.responseJSON.message);
-                }
-
-            } else {
-                alert("Server error");
-            }
-        }
+        error: handleAjaxError
     });
 }
 
@@ -59,11 +40,6 @@ function updateItem() {
     let name = $("#item-name").val().trim();
     let price = $("#item-price").val().trim();
     let qty = $("#item-qty").val().trim();
-
-    if (id === "" || name === "" || price === "" || qty === "") {
-        alert("Please fill all fields");
-        return;
-    }
 
     $.ajax({
         type: "PUT",
@@ -84,20 +60,7 @@ function updateItem() {
             clearItemForm();
         },
 
-        error: function (error) {
-
-            if (error.responseJSON) {
-
-                if (error.responseJSON.data) {
-                    alert(error.responseJSON.data);
-                } else {
-                    alert(error.responseJSON.message);
-                }
-
-            } else {
-                alert("Server error");
-            }
-        }
+        error: handleAjaxError
     });
 }
 
@@ -107,7 +70,7 @@ function deleteItem() {
 
     let id = $("#item-code").val().trim();
 
-    if (id === "") {
+    if (!id) {
         alert("Please select an item");
         return;
     }
@@ -128,20 +91,7 @@ function deleteItem() {
             clearItemForm();
         },
 
-        error: function (error) {
-
-            if (error.responseJSON) {
-
-                if (error.responseJSON.data) {
-                    alert(error.responseJSON.data);
-                } else {
-                    alert(error.responseJSON.message);
-                }
-
-            } else {
-                alert("Server error");
-            }
-        }
+        error: handleAjaxError
     });
 }
 
@@ -174,9 +124,7 @@ function getAllItems() {
             });
         },
 
-        error: function () {
-            alert("Error loading items");
-        }
+        error: handleAjaxError
     });
 }
 
@@ -210,6 +158,36 @@ function clearItemForm() {
     $("#item-name").val("");
     $("#item-price").val("");
     $("#item-qty").val("");
+}
+
+// COMMON ERROR HANDLER
+function handleAjaxError(error) {
+
+    if (!error.responseJSON) {
+        alert("Server error occurred");
+        return;
+    }
+
+    let response = error.responseJSON;
+
+    // Field validation errors (@Valid)
+    if (typeof response.data === "object" && response.data !== null) {
+
+        let messages = "";
+
+        for (let field in response.data) {
+            messages += response.data[field] + "\n";
+        }
+
+        alert(messages.trim());
+
+    } else if (response.data) {
+        // Business exception
+        alert(response.data);
+
+    } else {
+        alert(response.message);
+    }
 }
 
 

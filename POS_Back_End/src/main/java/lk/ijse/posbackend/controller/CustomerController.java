@@ -1,9 +1,11 @@
 package lk.ijse.posbackend.controller;
 
+import jakarta.validation.Valid;
 import lk.ijse.posbackend.dto.CustomerDTO;
 import lk.ijse.posbackend.service.CustomerService;
 import lk.ijse.posbackend.util.APIResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,27 +19,33 @@ public class CustomerController {
 
     @PostMapping
     public ResponseEntity<APIResponse<String>> saveCustomer(
-            @RequestBody CustomerDTO dto) {
+            @RequestBody @Valid CustomerDTO customerDTO) {
 
-        customerService.saveCustomer(dto);
+        customerService.saveCustomer(customerDTO);
 
-        return ResponseEntity
-                .status(201)
-                .body(new APIResponse<>(201,
-                        "Customer saved successfully",
-                        null));
+        return new ResponseEntity<>(
+                new APIResponse<>(
+                        201,
+                        "Customer Saved",
+                        null
+                ),
+                HttpStatus.CREATED
+        );
     }
 
     @PutMapping
     public ResponseEntity<APIResponse<String>> updateCustomer(
-            @RequestBody CustomerDTO dto) {
+            @RequestBody @Valid CustomerDTO customerDTO) {
 
-        customerService.updateCustomer(dto);
+        customerService.updateCustomer(customerDTO);
 
         return ResponseEntity.ok(
-                new APIResponse<>(200,
-                        "Customer updated successfully",
-                        null));
+                new APIResponse<>(
+                        200,
+                        "Customer Updated Successfully",
+                        null
+                )
+        );
     }
 
     @DeleteMapping("/{id}")
@@ -47,17 +55,23 @@ public class CustomerController {
         customerService.deleteCustomer(id);
 
         return ResponseEntity.ok(
-                new APIResponse<>(200,
-                        "Customer deleted successfully",
-                        null));
+                new APIResponse<>(
+                        200,
+                        "Customer Deleted Successfully",
+                        null
+                )
+        );
     }
 
     @GetMapping
     public ResponseEntity<APIResponse<?>> getAllCustomers() {
 
         return ResponseEntity.ok(
-                new APIResponse<>(200,
+                new APIResponse<>(
+                        200,
                         "Success",
-                        customerService.getAllCustomers()));
+                        customerService.getAllCustomers()
+                )
+        );
     }
 }

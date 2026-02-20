@@ -1,9 +1,11 @@
 package lk.ijse.posbackend.controller;
 
+import jakarta.validation.Valid;
 import lk.ijse.posbackend.dto.OrderDTO;
 import lk.ijse.posbackend.service.OrderService;
 import lk.ijse.posbackend.util.APIResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,16 +19,18 @@ public class OrderController {
 
     @PostMapping
     public ResponseEntity<APIResponse<String>> saveOrder(
-            @RequestBody OrderDTO orderDTO) {
+            @RequestBody @Valid OrderDTO orderDTO) {
 
         orderService.placeOrder(orderDTO);
 
-        return ResponseEntity
-                .status(201)
-                .body(new APIResponse<>(
+        return new ResponseEntity<>(
+                new APIResponse<>(
                         201,
                         "Order placed successfully",
-                        null));
+                        null
+                ),
+                HttpStatus.CREATED
+        );
     }
 
     @GetMapping
@@ -36,7 +40,9 @@ public class OrderController {
                 new APIResponse<>(
                         200,
                         "Success",
-                        orderService.getAllOrders()));
+                        orderService.getAllOrders()
+                )
+        );
     }
 
     @GetMapping("/next-id")
@@ -46,6 +52,8 @@ public class OrderController {
                 new APIResponse<>(
                         200,
                         "Success",
-                        orderService.generateNextOrderId()));
+                        orderService.generateNextOrderId()
+                )
+        );
     }
 }
