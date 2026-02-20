@@ -15,6 +15,7 @@ import lk.ijse.posbackend.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -30,18 +31,32 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public boolean placeOrder(OrderDTO dto) {
 
-        // Return false if order ID already exists
         if (orderRepository.existsById(dto.getOrderId())) {
             return false;
         }
 
-        // Validate customer existence
         Customer customer = customerRepository
                 .findById(dto.getCustomerId())
                 .orElse(null);
 
         if (customer == null) {
             return false;
+        }
+
+        // Validate all items first before saving anything
+        for (OrderDetailDTO detailDTO : dto.getOrderDetails()) {
+
+            Item item = itemRepository
+                    .findById(detailDTO.getItemId())
+                    .orElse(null);
+
+            if (item == null) {
+                return false;
+            }
+
+            if (item.getQty() < detailDTO.getQty()) {
+                return false;
+            }
         }
 
         Orders order = new Orders();
@@ -52,23 +67,9 @@ public class OrderServiceImpl implements OrderService {
 
         for (OrderDetailDTO detailDTO : dto.getOrderDetails()) {
 
-            // Prevent duplicate order detail ID
-            if (orderDetailRepository.existsById(detailDTO.getId())) {
-                return false;
-            }
-
             Item item = itemRepository
                     .findById(detailDTO.getItemId())
                     .orElse(null);
-
-            if (item == null) {
-                return false;
-            }
-
-            // Validate stock before deduction
-            if (item.getQty() < detailDTO.getQty()) {
-                return false;
-            }
 
             OrderDetail orderDetail = new OrderDetail();
             orderDetail.setOrder(order);
@@ -77,17 +78,16 @@ public class OrderServiceImpl implements OrderService {
             orderDetail.setPrice(detailDTO.getPrice());
             orderDetail.setQty(detailDTO.getQty());
             orderDetail.setTotal(detailDTO.getTotal());
-            orderDetail.setDate(detailDTO.getDate());
-
+            orderDetail.setDateTime(LocalDateTime.now());
             orderDetailRepository.save(orderDetail);
 
-            // Update item stock
             item.setQty(item.getQty() - detailDTO.getQty());
             itemRepository.save(item);
         }
 
         return true;
     }
+
     @Override
     public List<OrderDTO> getAllOrders() {
 

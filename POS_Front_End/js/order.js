@@ -1,24 +1,31 @@
-//  GLOBAL DATA
+// GLOBAL DATA
 let cartItems = [];
-let itemsData = {};        // Quick lookup for item details
-let existingOrderIds = new Set();  // Store existing order IDs
+let itemsData = {};
+let existingOrderIds = new Set();
 
 
 // LOAD CUSTOMERS
 function loadCustomers() {
+
     $.ajax({
         type: "GET",
         url: "http://localhost:8080/api/v1/customer",
+
         success: function (response) {
+
             let options = "<option value=''>Select Customer</option>";
-            $.each(response, function (index, customer) {
-                options += `<option value="${customer.id}">${customer.name}</option>`;
+
+            $.each(response.data, function (index, customer) {
+                options += `<option value="${customer.id}">
+                                ${customer.name}
+                            </option>`;
             });
+
             $("#customer-select").html(options);
         },
-        error: function (error) {
+
+        error: function () {
             alert("Error loading customers");
-            console.log(error);
         }
     });
 }
@@ -26,16 +33,18 @@ function loadCustomers() {
 
 // LOAD ITEMS
 function loadItems() {
+
     $.ajax({
         type: "GET",
         url: "http://localhost:8080/api/v1/item",
+
         success: function (response) {
 
-            itemsData = {}; // reset
+            itemsData = {};
 
             let options = "<option value=''>Select Item</option>";
 
-            $.each(response, function (index, item) {
+            $.each(response.data, function (index, item) {
 
                 itemsData[item.id] = {
                     name: item.name,
@@ -50,9 +59,9 @@ function loadItems() {
 
             $("#item-select").html(options);
         },
-        error: function (error) {
+
+        error: function () {
             alert("Error loading items");
-            console.log(error);
         }
     });
 }
@@ -60,23 +69,24 @@ function loadItems() {
 
 // LOAD EXISTING ORDERS
 function loadExistingOrders() {
+
     $.ajax({
         type: "GET",
         url: "http://localhost:8080/api/v1/order",
+
         success: function (response) {
+
             existingOrderIds.clear();
-            $.each(response, function (index, order) {
+
+            $.each(response.data, function (index, order) {
                 existingOrderIds.add(order.orderId);
             });
-        },
-        error: function (error) {
-            console.log("Could not load existing orders:", error);
         }
     });
 }
 
 
-// HELPER FUNCTIONS
+// HELPERS
 function isOrderIdDuplicate(orderId) {
     return existingOrderIds.has(orderId);
 }
@@ -89,12 +99,17 @@ function generateOrderDetailId(orderId, index) {
 // ADD TO CART
 function addToCart() {
 
+    let orderId = $("#order-id").val().trim();
     let itemCode = $("#item-select").val();
     let qty = parseInt($("#order-qty").val());
-    let orderId = $("#order-id").val();
+
+    if (!orderId) {
+        alert("Please enter Order ID first");
+        return;
+    }
 
     if (isOrderIdDuplicate(orderId)) {
-        alert("Order ID '" + orderId + "' already exists.");
+        alert("Order ID already exists.");
         return;
     }
 
@@ -104,12 +119,7 @@ function addToCart() {
     }
 
     if (!qty || qty <= 0) {
-        alert("Please enter a valid quantity");
-        return;
-    }
-
-    if (!orderId) {
-        alert("Please enter Order ID first");
+        alert("Invalid quantity");
         return;
     }
 
@@ -120,11 +130,11 @@ function addToCart() {
         return;
     }
 
-    let existingItem = cartItems.find(cartItem => cartItem.itemCode === itemCode);
-    let currentQtyInCart = existingItem ? existingItem.qty : 0;
+    let existingItem = cartItems.find(c => c.itemCode === itemCode);
+    let currentQty = existingItem ? existingItem.qty : 0;
 
-    if (currentQtyInCart + qty > item.availableQty) {
-        alert("Insufficient stock! Available quantity: " + item.availableQty);
+    if (currentQty + qty > item.availableQty) {
+        alert("Insufficient stock. Available: " + item.availableQty);
         return;
     }
 
@@ -149,25 +159,26 @@ function addToCart() {
 }
 
 
+// UPDATE CART TABLE
 function updateCartTable() {
 
     $("#cart-table tbody").empty();
 
-    let orderId = $("#order-id").val();
+    let orderId = $("#order-id").val().trim();
 
     $.each(cartItems, function (index, item) {
 
-        let orderDetailId = generateOrderDetailId(orderId, index);
+        let detailId = generateOrderDetailId(orderId, index);
 
         $("#cart-table tbody").append(`
             <tr>
-                <td>${orderDetailId}</td>
+                <td>${detailId}</td>
                 <td>${item.itemName}</td>
                 <td>
-                    <input type="number" 
-                           min="1" 
-                           value="${item.qty}" 
-                           class="update-qty" 
+                    <input type="number"
+                           class="update-qty"
+                           min="1"
+                           value="${item.qty}"
                            data-index="${index}">
                 </td>
                 <td>Rs. ${item.unitPrice.toFixed(2)}</td>
@@ -181,7 +192,8 @@ function updateCartTable() {
     });
 }
 
-// Update quantity
+
+// UPDATE QUANTITY
 $(document).on("click", ".btn-update", function () {
 
     let index = $(this).data("index");
@@ -198,7 +210,7 @@ $(document).on("click", ".btn-update", function () {
     let availableQty = itemsData[itemCode].availableQty;
 
     if (newQty > availableQty) {
-        alert("Insufficient stock! Available: " + availableQty);
+        alert("Insufficient stock. Available: " + availableQty);
         return;
     }
 
@@ -210,12 +222,10 @@ $(document).on("click", ".btn-update", function () {
 });
 
 
-// Delete item from cart
+// DELETE ITEM
 $(document).on("click", ".btn-delete", function () {
 
-    if (!confirm("Are you sure remove this item?")) {
-        return;
-    }
+    if (!confirm("Remove this item?")) return;
 
     let index = $(this).data("index");
 
@@ -239,35 +249,36 @@ function updateTotalAmount() {
 }
 
 
-//  PLACE ORDER
+// PLACE ORDER
 function placeOrder() {
 
-    let orderId = $("#order-id").val();
+    let orderId = $("#order-id").val().trim();
     let customerId = $("#customer-select").val();
 
     if (!orderId) {
-        alert("Please enter Order ID");
+        alert("Enter Order ID");
         return;
     }
 
     if (isOrderIdDuplicate(orderId)) {
-        alert("Order ID '" + orderId + "' already exists.");
+        alert("Order ID already exists.");
         return;
     }
 
     if (!customerId) {
-        alert("Please select a customer");
+        alert("Select customer");
         return;
     }
 
     if (cartItems.length === 0) {
-        alert("Please add items to cart");
+        alert("Cart is empty");
         return;
     }
 
     let orderDetails = [];
 
     $.each(cartItems, function (index, item) {
+
         orderDetails.push({
             id: generateOrderDetailId(orderId, index),
             itemId: item.itemCode,
@@ -281,22 +292,30 @@ function placeOrder() {
         type: "POST",
         url: "http://localhost:8080/api/v1/order",
         contentType: "application/json",
+
         data: JSON.stringify({
             orderId: orderId,
             customerId: customerId,
             orderDetails: orderDetails
         }),
-        success: function () {
-            alert("Order Placed Successfully");
 
-            existingOrderIds.add(orderId);
+        success: function (response) {
 
-            clearOrderForm();
-            loadItems(); // refresh stock
+            alert(response.message);
+
+            if (response.status === 201) {
+
+                existingOrderIds.add(orderId);
+
+                clearOrderForm();
+                loadItems();
+            }
         },
+
         error: function (error) {
-            if (error.responseText) {
-                alert(error.responseText);
+
+            if (error.responseJSON) {
+                alert(error.responseJSON.message);
             } else {
                 alert("Error placing order");
             }

@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -22,6 +24,5 @@ public class OrderDetail {
     private double price;
     private int qty;
     private double total;
-    private String date;
-
+    private LocalDateTime dateTime;
 }

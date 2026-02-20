@@ -2,11 +2,12 @@ package lk.ijse.posbackend.controller;
 
 import lk.ijse.posbackend.dto.OrderDTO;
 import lk.ijse.posbackend.service.OrderService;
+import lk.ijse.posbackend.util.APIResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("api/v1/order")
 @RequiredArgsConstructor
@@ -15,26 +16,34 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping
-    public ResponseEntity<String> saveOrder(@RequestBody OrderDTO orderDTO) {
+    public ResponseEntity<APIResponse<String>> saveOrder(
+            @RequestBody OrderDTO orderDTO) {
 
-        boolean result = orderService.placeOrder(orderDTO);
+        if (!orderService.placeOrder(orderDTO)) {
 
-        if (!result) {
             return ResponseEntity
-                    .badRequest()
-                    .body("Order ID already exists");
+                    .status(400)
+                    .body(new APIResponse<>(
+                            400,
+                            "Order failed: Duplicate ID or insufficient stock",
+                            null));
         }
 
         return ResponseEntity
                 .status(201)
-                .body("Order placed successfully");
+                .body(new APIResponse<>(
+                        201,
+                        "Order placed successfully",
+                        null));
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllOrders() {
-        return ResponseEntity.ok(orderService.getAllOrders());
+    public ResponseEntity<APIResponse<?>> getAllOrders() {
+
+        return ResponseEntity.ok(
+                new APIResponse<>(
+                        200,
+                        "Success",
+                        orderService.getAllOrders()));
     }
-
-
-
 }
