@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<div id="navigation">
+    <button onclick="window.location.href='Customer.html'">Customer</button>
+    <button onclick="window.location.href='Item.html'">Item</button>
+    <button onclick="window.location.href='Order.html'">Order</button>
+    <button onclick="window.location.href='../index.html'">Home</button>
+</div>
+<h1>Item</h1>
+<div id="item-data">
+    <input type="text" id="item-code" placeholder="Item Code"><br>
+    <input type="text" id="item-name" placeholder="Item Name"><br>
+    <input type="text" id="item-price" placeholder="Item Price"><br>
+    <input type="text" id="item-qty" placeholder="Item Quantity"><br>
+    <button onclick="saveItem()">Save</button>
+    <button onclick="updateItem()">Update</button>
+    <button onclick="clearItemForm()">Clear</button>
+    <button onclick="deleteItem()">Delete</button>
+
+
+</div>
+<div id="items">
+    <table border="1" width="600" id="item-table">
+        <thead>
+        <tr>
+            <th>Code</th>
+            <th>Item Name</th>
+            <th>Price</th>
+            <th>Quantity</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+<script src="../js/jquery-3.7.1.min.js"></script>
+<script src="../js/item.js"></script>
+</body>
+</html>

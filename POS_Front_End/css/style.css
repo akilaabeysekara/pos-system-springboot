@@ -1,0 +1,163 @@
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Body */
+body {
+    background: #f4f6f9;
+    padding: 30px;
+}
+
+/* Main Title */
+h1 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #2c3e50;
+}
+
+/* Navigation Bar */
+#navigation {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+#navigation button {
+    padding: 10px 20px;
+    margin: 5px;
+    border: none;
+    background-color: #3498db;
+    color: white;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#navigation button:hover {
+    background-color: #2980b9;
+}
+
+/* Form Sections */
+#customer-data,
+#item-data,
+#order-data {
+    background: white;
+    width: 400px;
+    margin: 0 auto 30px auto;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* Inputs */
+input, select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Buttons */
+#customer-data button,
+#item-data button,
+#order-data button {
+    padding: 8px 15px;
+    margin: 3px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+/* Move Place Order button to right */
+#place-order-container {
+    text-align: right;
+}
+
+
+/* Save */
+button:nth-child(5) {
+    background-color: #153695;
+    color: white;
+}
+
+/* Update */
+button:nth-child(6) {
+    background-color: #153695;
+    color: white;
+}
+
+/* Delete */
+button:nth-child(7) {
+    background-color: #153695;
+    color: white;
+}
+
+/* Search */
+button:nth-child(8) {
+    background-color: #153695;
+    color: white;
+}
+
+button:nth-child(9) {
+    background-color: #153695;
+    color: white;
+}
+button:nth-child(10) {
+    background-color: #153695;
+    color: white;
+}
+button:nth-child(11) {
+    background-color: #153695;
+    color: white;
+}
+button:nth-child(12) {
+    background-color: #153695;
+    color: white;
+}
+button:nth-child(13) {
+    background-color: #153695;
+    color: white;
+}
+button:nth-child(14) {
+    background-color: #153695;
+    color: white;
+}
+button:nth-child(15) {
+    background-color: #153695;
+    color: white;
+}
+
+#btn-place-order {
+    background-color: #153695;
+    color: white;
+}
+
+
+/* Tables */
+table {
+    border-collapse: collapse;
+    width: 80%;
+    margin: 0 auto;
+    background: white;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+thead {
+    background-color: #2c3e50;
+    color: white;
+}
+
+th, td {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+tbody tr:hover {
+    background-color: #ecf0f1;
+}
