@@ -12,6 +12,7 @@ import lk.ijse.posbackend.repository.ItemRepository;
 import lk.ijse.posbackend.repository.OrderRepository;
 import lk.ijse.posbackend.repository.OrderDetailRepository;
 import lk.ijse.posbackend.service.OrderService;
+import lk.ijse.posbackend.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderDetailRepository orderDetailRepository;
     private final CustomerRepository customerRepository;
     private final ItemRepository itemRepository;
+    private final PaymentService paymentService;
 
     @Override
     public boolean placeOrder(OrderDTO dto) {
@@ -85,6 +87,8 @@ public class OrderServiceImpl implements OrderService {
             itemRepository.save(item);
         }
 
+        //call payment service after every thing is done
+        paymentService.createPayment(dto.getOrderId());
         return true;
     }
 

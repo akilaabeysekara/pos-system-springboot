@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Payments</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<div id="navigation">
+    <button onclick="window.location.href='Customer.html'">Customer</button>
+    <button onclick="window.location.href='Item.html'">Item</button>
+    <button onclick="window.location.href='Order.html'">Order</button>
+    <button onclick="window.location.href='payment.html'">Payments</button>
+    <button onclick="window.location.href='../index.html'">Home</button>
+</div>
+
+<h1>Payment History</h1>
+
+<div id="payments-container">
+
+    <table id="payment-table">
+        <thead>
+        <tr>
+            <th>Payment ID</th>
+            <th>Order ID</th>
+            <th>Customer Name</th>
+            <th>Items</th>
+            <th>Amount (Rs.)</th>
+            <th>Method</th>
+            <th>Date & Time</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <!-- Loaded by payment.js -->
+        </tbody>
+
+    </table>
+
+</div>
+
+<script src="../js/jquery-3.7.1.min.js"></script>
+<script src="../js/payment.js"></script>
+
+</body>
+</html>
