@@ -22,11 +22,11 @@ https://youtu.be/WtQB0ND338k
 ### Embedded Video
 
 <div align="center">
-  <iframe width="800" height="450" src="https://www.youtube.com/embed/WtQB0ND338k" 
-  title="Spring Boot POS System - IJSE GDSE74 - Akila Abeysekara" 
-  frameborder="0" 
-  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-  allowfullscreen></iframe>
+
+<a href="https://youtu.be/WtQB0ND338k">
+  <img src="https://img.youtube.com/vi/WtQB0ND338k/maxresdefault.jpg" width="800" alt="Spring Boot POS System Demo"/>
+</a>
+
 </div>
 
 > Video demonstrates: login, customer/item CRUD, order placement, payment recording, search functionality, and REST API interaction via browser network tab.
