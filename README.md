@@ -22,9 +22,8 @@ https://youtu.be/WtQB0ND338k
 ### Embedded Video
 
 <div align="center">
-<a href="https://youtu.be/WtQB0ND338k">
-  <img src="https://img.youtube.com/vi/WtQB0ND338k/maxresdefault.jpg" width="800" alt="Spring Boot POS System Demo"/>
-</a>
+
+[![Spring Boot POS System Demo](https://img.youtube.com/vi/WtQB0ND338k/maxresdefault.jpg)](https://youtu.be/WtQB0ND338k)
 
 </div>
 
