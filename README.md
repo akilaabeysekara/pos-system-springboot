@@ -1,54 +1,67 @@
-# SPRING BOOT POS SYSTEM – IJSE
+# Spring Boot POS System – IJSE
 
-Student Name: Akila Abeysekara
-Batch: GDSE74
-Institute: IJSE – Institute of Software Engineering
+**Student Name:** Akila Abeysekara  
+**Batch:** GDSE74  
+**Institute:** IJSE – Institute of Software Engineering
 
-Project Description
+## Project Description
 
-This project is a Point of Sale (POS) System developed using Spring Boot for the backend and HTML, CSS, JavaScript, and AJAX for the frontend.
-The system allows users to manage customers, items, orders, and payments through a web-based interface. The frontend communicates with the backend using REST APIs.
+This is a **Point of Sale (POS)** system developed as part of the Graduate Diploma in Software Engineering program at IJSE.
 
-🎥 System Demonstration Video
+- **Backend**: Spring Boot  
+- **Frontend**: HTML, CSS, JavaScript, jQuery + AJAX  
+- **Communication**: RESTful APIs  
+- **Database**: MySQL  
 
-Below is the demonstration video explaining the POS System.
+The system enables users to manage **customers**, **items**, **orders**, and **payments** through a clean web interface.
 
-YouTube Link
+## 🎥 System Demonstration Video
+
 https://youtu.be/WtQB0ND338k
 
-Embedded Video
-<iframe width="900" height="500"
-src="https://youtu.be/WtQB0ND338k"
-title="Spring Boot POS System"
-frameborder="0"
-allowfullscreen>
-</iframe>
+### Embedded Video
 
-Technologies Used - Backend
-Spring Boot
-Spring Data JPA
-Hibernate
-REST API
-MySQL
-Maven
+<div align="center">
+  <iframe width="800" height="450" src="https://www.youtube.com/embed/WtQB0ND338k" 
+  title="Spring Boot POS System - IJSE GDSE74 - Akila Abeysekara" 
+  frameborder="0" 
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+  allowfullscreen></iframe>
+</div>
 
-Technologies Used - Frontend
-HTML
-CSS
-JavaScript
-jQuery
-AJAX
+> Video demonstrates: login, customer/item CRUD, order placement, payment recording, search functionality, and REST API interaction via browser network tab.
 
-System Features
-User Login
-Customer Management
-Item Management
-Order Management
-View payment history
-Search payments
+## Technologies Used
 
-System Architecture
-The system follows Layered Architecture.
+### Backend
+- Spring Boot  
+- Spring Data JPA  
+- Hibernate  
+- REST API  
+- MySQL  
+- Maven  
+
+### Frontend
+- HTML5  
+- CSS3  
+- JavaScript (ES6+)  
+- jQuery  
+- AJAX  
+
+## System Features
+
+- User Login  
+- Customer Management (CRUD)  
+- Item Management (CRUD)  
+- Order Management (place orders, select customer & items, auto-generate order ID)  
+- View & Search Payment History (by payment ID, order ID, customer name)  
+- Input validation & global exception handling  
+- Clean success/error responses to frontend  
+
+## System Architecture
+
+**Layered Architecture**
+
 
 Flow:
 User Action
@@ -65,7 +78,8 @@ Database
 ↓
 Response back to Frontend
 
-Project Structure
+
+## Project Structure
 POS-System
 │
 ├── POS_Back_End
@@ -81,7 +95,8 @@ POS-System
 │   ├── css
 │   └── js
 
-
-Akila Abeysekara
-Graduate Diploma in Software Engineering
-IJSE – Institute of Software Engineering
+---
+**Akila Abeysekara**  
+Graduate Diploma in Software Engineering  
+IJSE – Institute of Software Engineering  
+February 2026
