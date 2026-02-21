@@ -2,18 +2,70 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>IJSE POS System - Login</title>
+    <link rel="stylesheet" href="./css/login.css">
 </head>
 <body>
-<h1>IJSE POS</h1>
-<div id="navigation">
-    <button onclick="window.location.href='pages/Customer.html'">Customers</button>
-    <button onclick="window.location.href='pages/Item.html'">Items</button>
-    <button onclick="window.location.href='pages/Order.html'">Orders</button>
-    <button onclick="window.location.href='pages/payment.html'">Payments</button>
-</div>
 
+<!-- LOGIN SCREEN -->
+<section id="login-screen" class="page">
+    <div class="card">
+
+        <div class="text-center mb-3">
+            <h1 class="fw-bold text-pos-green mb-1">POS SYSTEM</h1>
+            <small class="text-secondary">Login to continue</small>
+        </div>
+
+        <form id="login-form" autocomplete="off">
+
+            <div class="form-floating mb-3">
+                <input type="text"
+                       class="form-control rounded-3"
+                       id="login-username"
+                       placeholder="Username"
+                       required
+                       autofocus />
+                <label for="login-username">Username</label>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input type="password"
+                       class="form-control rounded-3"
+                       id="login-password"
+                       placeholder="Password"
+                       required />
+                <label for="login-password">Password</label>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="form-check">
+                    <input class="form-check-input"
+                           type="checkbox"
+                           id="remember-me" />
+                    <label class="form-check-label small text-muted"
+                           for="remember-me">
+                        Remember me
+                    </label>
+                </div>
+            </div>
+
+            <div id="toast" class="toast"></div>
+
+            <!-- IMPORTANT: type="submit" -->
+            <button id="btn-login"
+                    type="submit"
+                    class="btn bg-pos w-100 py-2 fw-semibold shadow-sm">
+                Log In
+            </button>
+
+        </form>
+
+    </div>
+</section>
+
+<!-- Scripts -->
+<script src="./js/jquery-3.7.1.min.js"></script>
+<script src="./js/login.js"></script>
 
 </body>
 </html>

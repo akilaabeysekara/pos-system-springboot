@@ -19,6 +19,71 @@ h1 {
     color: #2c3e50;
 }
 
+
+/*==============home navigations*=============*/
+
+/* FULL PAGE CENTER */
+#home-body {
+    margin: 0;
+    height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ecf0f1;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #5D87DF, #0B0C63);
+}
+
+/* MAIN CONTAINER */
+#home-container {
+    text-align: center;
+    background-color: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* TITLE */
+#home-title {
+    font-size: 40px;
+    margin-bottom: 40px;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+/* NAVIGATION BUTTONS */
+#navigation-home {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+/* BUTTON STYLE */
+#navigation-home button {
+    padding: 12px 25px;
+    border: none;
+    background-color: #3D57AF;
+    color: white;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#navigation-home button:hover {
+    background-color: #2980b9;
+}
+
+/* LOGOUT BUTTON SPECIAL STYLE */
+#logout-btn {
+    background-color: #red;
+}
+
+#logout-btn:hover {
+    background-color: #c0392b;
+}
+
+
 /* Navigation Bar */
 #navigation {
     text-align: center;
