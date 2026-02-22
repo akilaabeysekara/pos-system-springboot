@@ -22,8 +22,9 @@ https://youtu.be/WtQB0ND338k
 ### Embedded Video
 
 <h2 align="center">🎥 Spring Boot POS System – IJSE</h2>
-
+<p align="center">
 [![Watch the video](https://img.youtube.com/vi/WtQB0ND338k/0.jpg)](https://youtu.be/WtQB0ND338k)
+  </p>
 > Video demonstrates: login, customer/item CRUD, order placement, payment recording, search functionality, and REST API interaction via browser network tab.
 
 ## Technologies Used
